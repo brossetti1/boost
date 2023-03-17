@@ -334,12 +334,12 @@ require (
 
 require (
 	github.com/filecoin-project/boostd-data v0.0.0-00010101000000-000000000000
+	github.com/filecoin-project/go-data-transfer/v2 v2.0.0-rc5
 	github.com/ipfs/go-ds-flatfs v0.5.1
 )
 
 require (
 	github.com/alexbrainman/goissue34681 v0.0.0-20191006012335-3fc7a47baff5 // indirect
-	github.com/filecoin-project/go-data-transfer/v2 v2.0.0-rc5 // indirect
 	github.com/google/pprof v0.0.0-20221203041831-ce31453925ec // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.2 // indirect
 	github.com/onsi/ginkgo/v2 v2.5.1 // indirect
