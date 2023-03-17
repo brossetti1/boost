@@ -33,7 +33,7 @@ import (
 	"github.com/filecoin-project/dagstore/indexbs"
 	"github.com/filecoin-project/dagstore/shard"
 	"github.com/filecoin-project/go-address"
-	dtnet "github.com/filecoin-project/go-data-transfer/network"
+	dtnet "github.com/filecoin-project/go-data-transfer/v2/network"
 	"github.com/filecoin-project/go-fil-markets/retrievalmarket"
 	lotus_storagemarket "github.com/filecoin-project/go-fil-markets/storagemarket"
 	storageimpl "github.com/filecoin-project/go-fil-markets/storagemarket/impl"

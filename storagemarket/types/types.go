@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/url"
 
 	"github.com/filecoin-project/boost/transport/httptransport/util"
 	"github.com/filecoin-project/boost/transport/types"
 	"github.com/filecoin-project/go-address"
 	"github.com/filecoin-project/go-fil-markets/storagemarket"
-	multiaddrutil "github.com/filecoin-project/go-legs/httpsync/multiaddr"
 	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/filecoin-project/go-state-types/builtin/v9/market"
 	"github.com/filecoin-project/go-state-types/crypto"
@@ -19,6 +19,8 @@ import (
 	"github.com/filecoin-project/specs-storage/storage"
 	"github.com/google/uuid"
 	"github.com/ipfs/go-cid"
+	"github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr/net"
 )
 
 //go:generate cbor-gen-for --map-encoding StorageAsk DealParamsV120 DealParams Transfer DealResponse DealStatusRequest DealStatusResponse DealStatus
@@ -98,6 +100,65 @@ type Transfer struct {
 	Size uint64
 }
 
+// ToURL takes a multiaddr of the form:
+// /dns/thing.com/http/urlescape<path/to/root>
+// /ip/192.168.0.1/tcp/80/http
+func ToURL(ma multiaddr.Multiaddr) (*url.URL, error) {
+	// host should be either the dns name or the IP
+	_, host, err := manet.DialArgs(ma)
+	if err != nil {
+		return nil, err
+	}
+	if ip := net.ParseIP(host); ip != nil {
+		if !ip.To4().Equal(ip) {
+			// raw v6 IPs need `[ip]` encapsulation.
+			host = fmt.Sprintf("[%s]", host)
+		}
+	}
+
+	protos := ma.Protocols()
+	pm := make(map[int]string, len(protos))
+	for _, p := range protos {
+		v, err := ma.ValueForProtocol(p.Code)
+		if err == nil {
+			pm[p.Code] = v
+		}
+	}
+
+	scheme := "http"
+	if _, ok := pm[multiaddr.P_HTTPS]; ok {
+		scheme = "https"
+	} else if _, ok = pm[multiaddr.P_HTTP]; ok {
+		// /tls/http == /https
+		if _, ok = pm[multiaddr.P_TLS]; ok {
+			scheme = "https"
+		}
+	} else if _, ok = pm[multiaddr.P_WSS]; ok {
+		scheme = "wss"
+	} else if _, ok = pm[multiaddr.P_WS]; ok {
+		scheme = "ws"
+		// /tls/ws == /wss
+		if _, ok = pm[multiaddr.P_TLS]; ok {
+			scheme = "wss"
+		}
+	}
+
+	path := ""
+	if pb, ok := pm[0x300200]; ok {
+		path, err = url.PathUnescape(pb)
+		if err != nil {
+			path = ""
+		}
+	}
+
+	out := url.URL{
+		Scheme: scheme,
+		Host:   host,
+		Path:   path,
+	}
+	return &out, nil
+}
+
 func (t *Transfer) Host() (string, error) {
 	if t.Type != "http" && t.Type != "libp2p" {
 		return "", fmt.Errorf("cannot parse params for unrecognized transfer type '%s'", t.Type)
@@ -118,7 +179,7 @@ func (t *Transfer) Host() (string, error) {
 	// If the url is in libp2p format
 	if u.Scheme == util.Libp2pScheme {
 		// Get the host from the multiaddr
-		mahttp, err := multiaddrutil.ToURL(u.Multiaddr)
+		mahttp, err := ToURL(u.Multiaddr)
 		if err != nil {
 			return "", err
 		}

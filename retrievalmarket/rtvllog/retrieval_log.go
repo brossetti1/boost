@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/filecoin-project/boost/retrievalmarket/server"
-	datatransfer "github.com/filecoin-project/go-data-transfer"
+	datatransfer "github.com/filecoin-project/go-data-transfer/v2"
 	"github.com/filecoin-project/go-fil-markets/retrievalmarket"
 	lotus_dtypes "github.com/filecoin-project/lotus/node/modules/dtypes"
 	logging "github.com/ipfs/go-log/v2"
