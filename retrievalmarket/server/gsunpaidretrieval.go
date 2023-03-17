@@ -1,16 +1,18 @@
 package server
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
+	"sync"
+
 	"github.com/filecoin-project/boost/metrics"
-	datatransfer "github.com/filecoin-project/go-data-transfer"
-	"github.com/filecoin-project/go-data-transfer/encoding"
-	"github.com/filecoin-project/go-data-transfer/message"
-	"github.com/filecoin-project/go-data-transfer/network"
-	"github.com/filecoin-project/go-data-transfer/registry"
-	"github.com/filecoin-project/go-data-transfer/transport/graphsync/extension"
+	datatransfer "github.com/filecoin-project/go-data-transfer/v2"
+	"github.com/filecoin-project/go-data-transfer/v2/message"
+	"github.com/filecoin-project/go-data-transfer/v2/network"
+	"github.com/filecoin-project/go-data-transfer/v2/registry"
+	"github.com/filecoin-project/go-data-transfer/v2/transport/graphsync/extension"
 	"github.com/filecoin-project/go-fil-markets/piecestore"
 	"github.com/filecoin-project/go-fil-markets/retrievalmarket"
 	retrievalimpl "github.com/filecoin-project/go-fil-markets/retrievalmarket/impl"
@@ -19,12 +21,43 @@ import (
 	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/hannahhoward/go-pubsub"
 	"github.com/ipfs/go-graphsync"
+	cbor "github.com/ipfs/go-ipld-cbor"
 	logging "github.com/ipfs/go-log/v2"
+	"github.com/ipld/go-ipld-prime/codec/dagcbor"
+	"github.com/ipld/go-ipld-prime/datamodel"
+	"github.com/ipld/go-ipld-prime/schema"
 	"github.com/libp2p/go-libp2p/core/peer"
 	cbg "github.com/whyrusleeping/cbor-gen"
 	"go.opencensus.io/stats"
-	"sync"
 )
+
+// Encodable is an object that can be written to CBOR and decoded back
+type Encodable interface{}
+
+// Encode encodes an encodable to CBOR, using the best available path for
+// writing to CBOR
+func Encode(value Encodable) ([]byte, error) {
+	if cbgEncodable, ok := value.(cbg.CBORMarshaler); ok {
+		buf := new(bytes.Buffer)
+		err := cbgEncodable.MarshalCBOR(buf)
+		if err != nil {
+			return nil, err
+		}
+		return buf.Bytes(), nil
+	}
+	if ipldEncodable, ok := value.(datamodel.Node); ok {
+		if tn, ok := ipldEncodable.(schema.TypedNode); ok {
+			ipldEncodable = tn.Representation()
+		}
+		buf := &bytes.Buffer{}
+		err := dagcbor.Encode(ipldEncodable, buf)
+		if err != nil {
+			return nil, err
+		}
+		return buf.Bytes(), nil
+	}
+	return cbor.DumpObject(value)
+}
 
 var log = logging.Logger("boostgs")
 
@@ -241,7 +274,7 @@ func (g *GraphsyncUnpaidRetrieval) interceptRetrieval(p peer.ID, request graphsy
 	}
 
 	// It's for an unpaid retrieval. Initialize the channel state.
-	selBytes, err := encoding.Encode(request.Selector())
+	selBytes, err := Encode(request.Selector())
 	if err != nil {
 		return true, fmt.Errorf("encoding selector: %w", err)
 	}

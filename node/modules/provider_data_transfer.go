@@ -6,7 +6,7 @@ import (
 	"time"
 
 	marketevents "github.com/filecoin-project/boost/markets/loggers"
-	dtimpl "github.com/filecoin-project/go-data-transfer/impl"
+	dtimpl "github.com/filecoin-project/go-data-transfer/v2/impl"
 	"github.com/filecoin-project/lotus/node/modules/dtypes"
 	"github.com/filecoin-project/lotus/node/repo"
 	"github.com/ipfs/go-datastore"

@@ -2,7 +2,7 @@ package server
 
 import (
 	"errors"
-	datatransfer "github.com/filecoin-project/go-data-transfer"
+	datatransfer "github.com/filecoin-project/go-data-transfer/v2"
 	"github.com/filecoin-project/go-fil-markets/retrievalmarket"
 	"github.com/hannahhoward/go-pubsub"
 	"time"
