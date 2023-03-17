@@ -18,6 +18,7 @@ require (
 	github.com/chzyer/readline v1.5.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/docker/go-units v0.5.0
+	github.com/drand/drand v1.5.4 // indirect
 	github.com/dustin/go-humanize v1.0.1
 	github.com/etclabscore/go-openrpc-reflect v0.0.36
 	github.com/fatih/color v1.14.1
@@ -34,7 +35,7 @@ require (
 	github.com/filecoin-project/go-paramfetch v0.0.4
 	github.com/filecoin-project/go-state-types v0.10.0
 	github.com/filecoin-project/go-statestore v0.2.0
-	github.com/filecoin-project/lotus v1.20.1-0.20230315114501-b8589e8c5102
+	github.com/filecoin-project/lotus v1.20.3
 	github.com/filecoin-project/specs-actors v0.9.15
 	github.com/filecoin-project/specs-storage v0.4.1
 	github.com/gbrlsnchs/jwt/v3 v3.0.1
@@ -75,7 +76,6 @@ require (
 	github.com/jbenet/go-random v0.0.0-20190219211222-123a90aedc0c
 	github.com/jpillora/backoff v1.0.0
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/libp2p/go-eventbus v0.2.1
 	github.com/libp2p/go-libp2p v0.26.2
 	github.com/libp2p/go-libp2p-gostream v0.6.0
 	github.com/libp2p/go-libp2p-http v0.5.0
@@ -112,7 +112,6 @@ require (
 	golang.org/x/tools v0.5.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
-	github.com/drand/drand v1.5.4
 )
 
 require (
@@ -340,33 +339,18 @@ require (
 
 require (
 	github.com/alexbrainman/goissue34681 v0.0.0-20191006012335-3fc7a47baff5 // indirect
-	github.com/briandowns/spinner v1.21.0 // indirect
-	github.com/felixge/httpsnoop v1.0.3 // indirect
-	github.com/go-chi/chi v1.5.4 // indirect
-	github.com/gogo/googleapis v1.4.1 // indirect
-	github.com/gogo/status v1.1.1 // indirect
+	github.com/filecoin-project/go-data-transfer v1.15.2 // indirect
+	github.com/filecoin-project/go-legs v0.4.4 // indirect
+	github.com/filecoin-project/index-provider v0.9.1 // indirect
+	github.com/filecoin-project/storetheindex v0.4.30-0.20221114113647-683091f8e893 // indirect
+	github.com/go-kit/kit v0.12.0 // indirect
 	github.com/google/pprof v0.0.0-20230207041349-798e818bf904 // indirect
-	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
-	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
-	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.2 // indirect
-	github.com/jmoiron/sqlx v1.3.5 // indirect
-	github.com/jonboulle/clockwork v0.3.0 // indirect
-	github.com/lib/pq v1.10.7 // indirect
 	github.com/onsi/ginkgo/v2 v2.8.0 // indirect
-	github.com/opentracing-contrib/go-grpc v0.0.0-20210225150812-73cb765af46e // indirect
-	github.com/opentracing-contrib/go-stdlib v1.0.0 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/qtls-go1-19 v0.2.1 // indirect
 	github.com/quic-go/qtls-go1-20 v0.1.1 // indirect
 	github.com/quic-go/quic-go v0.33.0 // indirect
 	github.com/quic-go/webtransport-go v0.5.2 // indirect
-	github.com/sercand/kuberesolver v2.4.0+incompatible // indirect
-	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
-	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
-	github.com/weaveworks/common v0.0.0-20230208133027-16871410fca4 // indirect
-	github.com/weaveworks/promrus v1.2.0 // indirect
-	go.dedis.ch/protobuf v1.0.11 // indirect
-	go.etcd.io/bbolt v1.3.7 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 )
